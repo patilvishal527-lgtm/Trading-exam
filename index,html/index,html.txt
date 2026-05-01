@@ -1,0 +1,233 @@
+<!DOCTYPE html>                        
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Risk Management & Trading Certification</title>
+      <style>
+          :root {
+              --primary: #2c3e50;
+              --secondary: #3498db;
+              --success: #27ae60;
+              --danger: #e74c3c;
+              --light: #f4f7f6;
+          }
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); margin: 0; padding: 20px; color: var(--primary); }
+          .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+          h1 { text-align: center; color: var(--primary); border-bottom: 3px solid var(--secondary); padding-bottom: 10px; }
+          .student-info { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+          input[type="text"] { padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 5px; }
+          .question-block { margin-bottom: 25px; padding: 15px; border-left: 5px solid var(--secondary); background: #fafafa; transition: 0.3s; }
+          .question-text { font-weight: 600; margin-bottom: 12px; font-size: 1.1rem; }
+          .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+          .option { padding: 10px; background: white; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+          .option:hover { background: #eef; border-color: var(--secondary); }
+          .option.selected { background: var(--secondary); color: white; border-color: var(--secondary); }
+          #submit-btn { display: block; width: 100%; padding: 15px; background: var(--success); color: white; border: none; border-radius: 8px; font-size: 1.2rem; cursor: pointer; margin-top: 30px;
+  }
+          #result { display: none; text-align: center; padding: 20px; margin-top: 20px; border-radius: 10px; font-size: 1.5rem; font-weight: bold; }
+          .correct { color: var(--success); background: #eafff2; border: 2px solid var(--success); }
+          .wrong { color: var(--danger); background: #ffebee; border: 2px solid var(--danger); }
+          .wrong-answer { color: var(--danger); font-size: 0.9rem; margin-top: 5px; display: block; }
+      </style>
+  </head>
+  <body>
+
+  <div class="container">
+      <h1>📈 Trading & Risk Management Exam</h1>
+
+      <div class="student-info">
+          <input type="text" id="student-name" placeholder="Enter Full Name">
+      </div>
+
+      <div id="quiz-container">
+          <!-- Questions will be loaded here by JavaScript -->
+      </div>
+
+      <button id="submit-btn" onclick="calculateScore()">Submit Exam</button>
+      <div id="result"></div>
+  </div>
+
+  <script>
+      const questions = [
+          // Module 1
+          { q: "What is the primary goal of a Scalper?", a: ["To hold assets for years", "To capture very small price movements", "To trade once a month", "To ignore volatility"], correct: 1 },
+          { q: "Which trading style is most suitable for someone with a full-time job?", a: ["Scalping", "Day Trading", "Swing Trading", "High-Frequency Trading"], correct: 2 },
+          { q: "A 'Day Trader' is someone who:", a: ["Holds trades for weeks", "Closes all positions before the day ends", "Only trades weekends", "Never uses stop losses"], correct: 1 },
+          { q: "Position trading is characterized by:", a: ["1-minute charts", "Long-term horizons/fundamental analysis", "Rapid entry and exit", "Avoiding all risk"], correct: 1 },
+          { q: "In a 'Bull Market,' the general price trend is:", a: ["Downward", "Upward", "Flat", "Random"], correct: 1 },
+          { q: "A 'Bear Market' is characterized by:", a: ["Consistent price increases", "Consistent price decreases", "Low volatility", "Bullish patterns"], correct: 1 },
+          { q: "What is 'Liquidity' in trading?", a: ["Total cash in bank", "Ability to buy/sell without causing major price change", "Total candles on chart", "Internet speed"], correct: 1 },
+          { q: "Which of these is a 'Fundamental' analysis factor?", a: ["Support level", "Central Bank Interest Rate decision", "Bullish Pin Bar", "Moving Average"], correct: 1 },
+          { q: "Technical Analysis primarily focuses on:", a: ["Balance sheets", "Historical price action and volume", "Political rumors", "CEO biography"], correct: 1 },
+          { q: "What is a 'Long' position?", a: ["Betting price will fall", "Buying expecting price to rise", "Holding for 10 years", "Trading without a broker"], correct: 1 },
+          { q: "What is a 'Short' position?", a: ["Buying at a low price", "Selling expecting price to fall", "Using short timeframes", "A 5-second trade"], correct: 1 },
+          { q: "The 'Bid' price is:", a: ["Price you buy at", "Price the market is willing to buy (you sell here)", "Average of high/low", "Auction price"], correct: 1 },
+          { q: "The 'Ask' price is:", a: ["Price you sell at", "Price you can buy from the market", "Price after a stop-hunt", "Closing price"], correct: 1 },
+          { q: "What happens to the spread during high volatility?", a: ["Stays same", "Usually widens", "Disappears", "Becomes negative"], correct: 1 },
+          { q: "What is the purpose of a 'Stop Loss'?", a: ["Guarantee profit", "Limit capital lost on a failing trade", "Signal trend start", "Increase leverage"], correct: 1 },
+          { q: "A 'Take Profit' (TP) order is used to:", a: ["Stop a loss", "Automatically close trade at target profit", "Open opposite position", "Calculate spread"], correct: 1 },
+          { q: "What is 'Leverage' in trading?", a: ["Candlestick pattern", "Using borrowed funds to increase trade size", "Cleaning a chart", "Identifying supply zones"], correct: 1 },
+          { q: "High leverage increases both potential profit and:", a: ["Trading speed", "Potential risk/loss", "Market liquidity", "Pip value"], correct: 1 },
+          { q: " 'Margin' is best described as:", a: ["Company profit margin", "Deposit required to open a leveraged position", "Space between candles", "Trade duration"], correct: 1 },
+          { q: "What is a 'Margin Call'?", a: ["Broker congratulation", "Demand for more funds to cover losses", "Signal to enter zone", "Setting a TP"], correct: 1 },
+
+          // Module 2
+          { q: "In most currency pairs, a 'Pip' is the move of the:", a: ["1st decimal", "4th decimal (0.0001)", "2nd decimal", "Whole number"], correct: 1 },
+          { q: "For JPY pairs, a pip is typically the:", a: ["4th decimal", "2nd decimal (0.01)", "5th decimal", "1st decimal"], correct: 1 },
+          { q: "What is a 'Pipette'?", a: ["Small candle", "A fractional pip (5th decimal)", "Type of pullback", "Small supply zone"], correct: 1 },
+          { q: "If you buy EURUSD at 1.0850 and it rises to 1.0860, how many pips were gained?", a: ["1", "10", "100", "0.1"], correct: 1 },
+          { q: "The spread is considered 'tight' when:", a: ["Difference between bid/ask is large", "Difference between bid/ask is small", "Market is trending", "Candles are small"], correct: 1 },
+          { q: "Which usually has the tightest spreads?", a: ["Exotic pairs", "Major pairs (e.g., EURUSD)", "Penny stocks", "Rare commodities"], correct: 1 },
+          { q: "A 'Ranging Market' is also known as:", a: ["Trending", "Sideways", "Volatile", "Parabolic"], correct: 1 },
+          { q: "In a ranging market, traders typically:", a: ["Buy top/Sell bottom", "Buy support/Sell resistance", "Use trend indicators", "Hold for years"], correct: 1 },
+          { q: "What is a 'Breakout'?", a: ["Losing all money", "Price moving out of a range with strength", "Candle with no wick", "Zero spread"], correct: 1 },
+          { q: "A 'False Breakout' (Fakeout) occurs when:", a: ["Price breaks a level then reverses back into range", "Price never touches support", "Broker closes account", "Trend is too strong"],
+  correct: 0 },
+          { q: "An 'Uptrend' is characterized by:", a: ["Lower highs/lows", "Higher highs/higher lows", "Equal highs/lows", "Doji candles"], correct: 1 },
+          { q: "A 'Downtrend' is characterized by:", a: ["Higher highs/lows", "Lower highs/lower lows", "Equal highs/lows", "Bullish engulfing"], correct: 1 },
+          { q: "What is 'Volatility'?", a: ["Internet speed", "Frequency/magnitude of price movements", "Trend direction", "Pipette count"], correct: 1 },
+          { q: "High volatility usually leads to:", a: ["Small candles", "Larger candles and faster swings", "Sideways market", "Zero spread"], correct: 1 },
+          { q: " 'Consolidation' refers to a period where:", a: ["Price moves rapidly", "Price trades in a tight range after a strong move", "Market crashed", "Only institutions trade"], correct: 1
+  },
+          { q: "Which is a sign of a strengthening trend?", a: ["Deeper pullbacks", "Higher lows becoming more aggressive", "Flat price for weeks", "Frequent fakeouts"], correct: 1 },
+          { q: "What is 'Price Action'?", a: ["Reading news", "Studying price movements without relying solely on indicators", "Calculating spread", "Predicting yearly price"], correct: 1 },
+          { q: "A 'Support Level' is an area where:", a: ["Sellers overwhelm buyers", "Buying pressure stops price from falling", "Price always reverses 100%", "Spread is highest"], correct: 1 },
+          { q: "A 'Resistance Level' is an area where:", a: ["Buyers overwhelm sellers", "Selling pressure stops price from rising", "Price crashes immediately", "Only scalpers trade"], correct: 1
+  },
+          { q: "When Resistance is broken and price stays above, it often becomes:", a: ["New Resistance", "New Support", "Supply Zone", "Stop-Hunt area"], correct: 1 },
+
+          // Module 3
+          { q: "In an uptrend, a pullback is a:", a: ["Trend end", "Temporary dip providing a buying opportunity", "Market crash", "Short signal"], correct: 1 },
+          { q: "The primary reason for a pullback is:", a: ["Weekend close", "Profit-taking by early traders", "Spread change", "Lack of liquidity"], correct: 1 },
+          { q: "A 'Deep Pullback' is one that:", a: ["Never happens", "Retraces a significant portion of the previous move", "Only happens in ranges", "Is always a fakeout"], correct: 1 },
+          { q: "Common tool used to measure pullbacks:", a: ["Fibonacci Retracement", "News Feed", "Stopwatch", "Broker list"], correct: 0 },
+          { q: "Entering during a pullback is generally:", a: ["High risk/Low reward", "Lower risk/Better reward", "Impossible in Forex", "Only for institutions"], correct: 1 },
+          { q: "What is a 'StopHunt' designed to do?", a: ["Help retail traders", "Trigger stop-losses to create liquidity for big players", "Stabilize price", "Predict tops"], correct: 1 },
+          { q: "Where do StopHunts usually occur?", a: ["Middle of candle", "Just above resistance/below support", "Weekends", "Zero volatility"], correct: 1 },
+          { q: "What is the 'look' of a StopHunt?", a: ["Sideways move", "Sharp spike (wick) that breaks level and reverses", "Small equal candles", "Gap that never closes"], correct: 1 },
+          { q: "Why do institutions 'hunt' stops?", a: ["To trick retail traders", "To gather liquidity for massive orders", "To lower spreads", "To stop the trend"], correct: 1 },
+          { q: "A sudden spike below support followed by strong recovery is likely:", a: ["Permanent crash", "StopHunt/Liquidity Grab", "Ranging market", "Slow pullback"], correct: 1 },
+          { q: "To avoid StopHunts, a trader should:", a: ["Never use stops", "Use hidden areas or wait for the hunt first", "Use 1-min charts", "Place stops exactly on lines"], correct: 1 },
+          { q: "A 'Liquidity Grab' is another name for:", a: ["Pullback", "StopHunt", "Breakout", "Range"], correct: 1 },
+          { q: "A 'Healthy Trend' has:", a: ["No pullbacks", "Regular pullbacks that don't break structure", "Constant stop-hunts", "Linear movement"], correct: 1 },
+          { q: "A pullback in a downtrend is a:", a: ["Temporary rally (up move)", "Buy and hold signal", "Market crash", "Bear market end"], correct: 0 },
+          { q: " 'Trend is your friend' means:", a: ["Trade against trend", "Trade in direction of overall momentum", "Use only indicators", "Trade only news"], correct: 1 },
+          { q: "Price breaks support then consolidates above it; this is often:", a: ["Bullish sign (Fakeout)", "Bearish sign", "Short signal", "Spread widening"], correct: 0 },
+          { q: "Relationship between Volume and a valid Breakout:", a: ["Volume should be low", "Volume should be high to confirm", "Volume doesn't matter", "Volume must be zero"], correct: 1 },
+          { q: "A 'V-shape' recovery often follows:", a: ["Slow pullback", "Sharp StopHunt/Liquidity Grab", "Long range", "Flat consolidation"], correct: 1 },
+          { q: "To confirm a trend has resumed after a pullback, look for:", a: ["New low", "Reversal candle pattern (e.g. Bullish Engulfing)", "5 days of flat price", "Broker email"], correct: 1 },
+          { q: "Most dangerous place to put a stop loss:", a: ["Far from price", "Exactly on obvious support/psychological round numbers", "Structure break", "Hidden zone"], correct: 1 },
+
+          // Module 4
+          { q: "What is a 'Demand Zone'?", a: ["Too much supply", "Area where big institutional buyers have massive orders", "Point where price stops", "Market open time"], correct: 1 },
+          { q: "What is a 'Supply Zone'?", a: ["Active buyers", "Area where big institutional sellers have massive orders", "Flat range", "Type of stop-loss"], correct: 1 },
+          { q: "Difference between 'Support Level' and 'Demand Zone'?", a: ["No difference", "Support is a line; Demand is a broader area", "Demand is for stocks only", "Support is stronger"],
+  correct: 1 },
+          { q: "When price returns to a fresh Demand Zone for the first time:", a: ["StopHunt", "First 'Touch' or 'Test'", "Trend reversal", "Fakeout"], correct: 1 },
+          { q: "Why is the first touch usually most powerful?", a: ["Broker discount", "Unfilled institutional orders remain", "Start of day", "Tight spread"], correct: 1 },
+          { q: "What happens to a zone as it is touched multiple times?", a: ["Becomes stronger", "Becomes 'weaker' as orders are filled", "Changes color", "Becomes stop-hunt area"], correct: 1 },
+          { q: " 'Rally-Base-Drop' pattern identifies a:", a: ["Demand Zone", "Supply Zone", "Bullish Engulfing", "StopHunt"], correct: 1 },
+          { q: " 'Drop-Base-Rally' pattern identifies a:", a: ["Supply Zone", "Demand Zone", "Bearish Engulfing", "Range"], correct: 1 },
+          { q: "What is 'Imbalance' in S&D?", a: ["Empty account", "Huge difference between buyers/sellers causing rapid move", "Bid/Ask equality", "Too many indicators"], correct: 1 },
+          { q: "A 'Strong' zone is characterized by:", a: ["Slow exit", "Explosive exit (large candles)", "Staying in zone for days", "Small dojis"], correct: 1 },
+          { q: "What is a 'Fresh Zone'?", a: ["Created today", "Not touched since creation", "Touched 10 times", "Already broken"], correct: 1 },
+          { q: "When price breaks through a Supply Zone with strength, it is:", a: ["Stronger", " 'Broken' or 'Invalidated'", "Demand Zone automatically", "Stop-loss area"], correct: 1 },
+          { q: "In S&D Trading, the goal is to:", a: ["Trade every candle", "Follow 'Big Money' (Institutions)", "Ignore trend", "Buy at supply top"], correct: 1 },
+          { q: "A 'Base' in an S&D pattern is:", a: ["Bottom of chart", "Consolidation/tight range before a big move", "Most volatile part", "Total loss"], correct: 1 },
+          { q: "Which is a more reliable signal?", a: ["Slow, choppy exit", "Explosive exit", "Touched 5 times", "Broken and returned"], correct: 1 },
+          { q: "To 'Buy,' you should look for price to enter a:", a: ["Supply Zone", "Demand Zone", "StopHunt area", "Resistance level"], correct: 1 },
+          { q: "To 'Sell,' you should look for price to enter a:", a: ["Demand Zone", "Supply Zone", "Support level", "Bullish engulfing"], correct: 1 },
+          { q: "What is the 'Risk-to-Reward' ratio?", a: ["Pips divided by candles", "Comparison between amount risked and potential profit", "Spread divided by leverage", "Total money"], correct: 1
+   },
+          { q: "A '1:3 Risk-to-Reward' means:", a: ["Risk 3 to make 1", "Risk 1 to make 3", "Make 1 per 3 trades", "3 stop losses"], correct: 1 },
+          { q: "Supply/Demand zones allow traders to:", a: ["Eliminate all risk", "Set tighter stops and aim for higher rewards", "Avoid brokers", "Trade without charts"], correct: 1 },
+
+          // Module 5
+          { q: "A 'Bullish Engulfing' pattern is:", a: ["Large red, then small green", "Small red, then large green covering it", "Two equal greens", "No body, long wick"], correct: 1 },
+          { q: "A 'Bearish Engulfing' pattern signals:", a: ["Uptrend", "Potential reversal to downside", "Ranging market", "StopHunt"], correct: 1 },
+          { q: "A 'Pin Bar' or 'Hammer' is characterized by:", a: ["Large body, no wick", "Small body, very long wick (tail)", "Three candles same color", "Square candle"], correct: 1 },
+          { q: "A Hammer at the bottom of a downtrend suggests:", a: ["Selling pressure", "Potential bullish reversal", "Trend continuation", "Spread widening"], correct: 1 },
+          { q: "What is a 'Doji' candle?", a: ["Longest body", "Open and close almost identical (neutral)", "Monday candle", "Bearish engulfing"], correct: 1 },
+          { q: "A 'Marubozu' candle has:", a: ["Long wick, tiny body", "Large body, little to no wicks", "No body", "Pattern of five candles"], correct: 1 },
+          { q: "Which combination is most powerful in a Demand Zone?", a: ["Small Dojis", "Bullish Engulfing or strong Hammer", "Bearish Marubozu", "Small red candle"], correct: 1 },
+          { q: "A long upper wick on a candle indicates:", a: ["Buying pressure", "Sellers pushed price down after a high", "Market closing", "Bullish trend"], correct: 1 },
+          { q: "A 'Morning Star' pattern is generally:", a: ["Bearish", "Bullish", "Neutral", "StopHunt sign"], correct: 1 },
+          { q: "An 'Evening Star' pattern is generally:", a: ["Bullish", "Bearish", "Neutral", "Demand zone sign"], correct: 1 },
+          { q: " 'Candle Confirmation' means:", a: ["Asking broker", "Waiting for candle to close before entry", "Five indicators", "Trading instantly"], correct: 1 },
+          { q: "A 'Inside Bar' occurs when:", a: ["Candle is larger than previous", "Current candle's range is within previous range", "No wicks", "In a stop-hunt"], correct: 1 },
+          { q: "A 'Strong Bullish Marubozu' breaking resistance suggests:", a: ["Immediate reversal", "Strong momentum/continuation", "Entering range", "Fakeout"], correct: 1 },
+          { q: "Combining Candle Patterns with S&D Zones is called:", a: ["Random trading", "Confluence", "Over-trading", "Scalping"], correct: 1 },
+          { q: "If you see a Hammer in a Supply Zone:", a: ["Buy immediately", "Be cautious (Hammer is bullish, Zone is bearish)", "Ignore candle", "Close account"], correct: 1 },
+          { q: "A 'Squeeze' happens when:", a: ["Price moves fast", "Price consolidates in tight range before breakout", "Zero spread", "Linear trend"], correct: 1 },
+          { q: "Which is more important for a reversal signal?", a: ["Color only", "Location (Zone) + Pattern (Candle) combined", "Time of day", "Pip count"], correct: 1 },
+          { q: "What is a 'Wick Rejection'?", a: ["Broker reject", "Price enters zone and bounces back, leaving long wick", "No body", "Trend changes every second"], correct: 1 },
+          { q: "A 'Bull Trap' is when:", a: ["Forced to sell", "Price looks like breakout up, then crashes", "Demand zone created", "Spread too tight"], correct: 1 },
+          { q: "A 'Bear Trap' is when:", a: ["Price looks like breakdown, then reverses sharply up", "Sellers profit", "Supply zone broken", "Purely bearish trend"], correct: 0 },
+      ];
+
+      function loadQuestions() {
+          const container = document.getElementById('quiz-container');
+          questions.forEach((item, index) => {
+              const block = document.createElement('div');
+              block.className = 'question-block';
+              block.id = `qblock-${index}`;
+
+              let optionsHTML = '';
+              item.a.forEach((opt, optIndex) => {
+                  optionsHTML += `<div class="option" onclick="selectOption(${index}, ${optIndex})" id="opt-${index}-${optIndex}">${opt}</div>`;
+              });
+
+              block.innerHTML = `
+                  <div class="question-text">${index + 1}. ${item.q}</div>
+                  <div class="options">${optionsHTML}</div>
+              `;
+              container.appendChild(block);
+          });
+      }
+
+      let userAnswers = {};
+
+      function selectOption(qIndex, optIndex) {
+          userAnswers[qIndex] = optIndex;
+          const options = document.querySelectorAll(`#qblock-${qIndex} .option`);
+          options.forEach(opt => opt.classList.remove('selected'));
+          document.getElementById(`opt-${qIndex}-${optIndex}`).classList.add('selected');
+      }
+
+      function calculateScore() {
+          const name = document.getElementById('student-name').value;
+          if(!name) {
+              alert("Please enter your name first!");
+              return;
+          }
+
+          let score = 0;
+          questions.forEach((item, index) => {
+              const block = document.getElementById(`qblock-${index}`);
+              const selected = userAnswers[index];
+
+              if(selected === item.correct) {
+                  score++;
+                  block.classList.add('correct');
+              } else {
+                  block.classList.add('wrong');
+                  const correctText = item.a[item.correct];
+                  block.innerHTML += `<span class="wrong-answer">Correct Answer: ${correctText}</span>`;
+              }
+          });
+
+          const resultDiv = document.getElementById('result');
+          resultDiv.style.display = 'block';
+          resultDiv.innerHTML = `Student: ${name} <br> Final Score: ${score} / 100`;
+          resultDiv.className = score >= 70 ? 'correct' : 'wrong';
+
+          document.getElementById('submit-btn').style.display = 'none';
+          window.scrollTo(0,0);
+      }
+
+      loadQuestions();
+  </script>
+
+  </body>
+  </html>
